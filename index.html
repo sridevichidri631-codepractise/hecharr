@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hecharr — Gummies That Actually Work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ─── DESIGN SYSTEM ─────────────────────────────────── */
+:root {
+  --cream:   #FFF8F0;
+  --peach:   #FFB997;
+  --coral:   #FF6B4A;
+  --berry:   #C23B7A;
+  --plum:    #2D1B3D;
+  --gold:    #F5C842;
+  --mint:    #7ED8C0;
+  --white:   #FFFFFF;
+  --text:    #1A0F2E;
+  --muted:   #8A7A9B;
+  --border:  rgba(45,27,61,0.1);
+  --r-pill:  999px;
+  --r-card:  24px;
+  --shadow:  0 8px 40px rgba(45,27,61,0.12);
+  --shadow-lg: 0 24px 80px rgba(45,27,61,0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ─── TYPOGRAPHY ─────────────────────────────────────── */
+.display { font-family: 'Playfair Display', serif; font-weight: 900; line-height: 1.0; }
+.serif   { font-family: 'Playfair Display', serif; font-weight: 700; }
+
+/* ─── ANIMATIONS ─────────────────────────────────────── */
+@keyframes float { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-20px) rotate(3deg)} }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes fadeUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pop { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes blob { 0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%} 50%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%} }
+@keyframes pulse-ring { 0%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(255,107,74,0.4)} 70%{transform:scale(1);box-shadow:0 0 0 20px rgba(255,107,74,0)} 100%{transform:scale(0.95)} }
+
+.animate-fadeUp { animation: fadeUp 0.8s ease both; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* ─── NAVBAR ─────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 16px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,248,240,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--plum);
+  letter-spacing: -1px;
+  text-decoration: none;
+}
+
+.nav-logo span { color: var(--coral); }
+
+.nav-links {
+  display: flex; gap: 36px; list-style: none;
+}
+
+.nav-links a {
+  font-size: 15px; font-weight: 500;
+  color: var(--text); text-decoration: none;
+  position: relative; padding-bottom: 4px;
+  transition: color 0.2s;
+}
+
+.nav-links a::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--coral);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover { color: var(--coral); }
+.nav-links a:hover::after { width: 100%; }
+
+.nav-right {
+  display: flex; align-items: center; gap: 16px;
+}
+
+.cart-btn {
+  background: var(--plum); color: var(--white);
+  border: none; border-radius: var(--r-pill);
+  padding: 10px 22px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+
+.cart-btn:hover { background: var(--coral); transform: translateY(-1px); }
+
+.cart-count {
+  background: var(--gold); color: var(--plum);
+  border-radius: 50%; width: 20px; height: 20px;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── HERO ───────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 120px 80px 80px;
+  gap: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg-blob {
+  position: absolute;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(255,185,151,0.4) 0%, rgba(255,248,240,0) 70%);
+  border-radius: 50%;
+  right: -200px; top: 50%;
+  transform: translateY(-50%);
+  animation: blob 8s ease-in-out infinite;
+}
+
+.hero-bg-blob-2 {
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(194,59,122,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  left: -100px; bottom: 0;
+  animation: blob 10s ease-in-out infinite reverse;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: var(--plum);
+  border-radius: var(--r-pill);
+  padding: 6px 16px;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+  animation: pop 0.6s ease both;
+}
+
+.hero-badge::before { content: '✦'; font-size: 12px; }
+
+.hero-title {
+  font-size: clamp(52px, 6vw, 88px);
+  line-height: 0.95;
+  color: var(--plum);
+  margin-bottom: 24px;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--coral);
+  display: block;
+}
+
+.hero-sub {
+  font-size: 18px; font-weight: 300;
+  color: var(--muted); line-height: 1.7;
+  max-width: 440px;
+  margin-bottom: 40px;
+}
+
+.hero-ctas {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.btn-primary {
+  background: var(--coral); color: var(--white);
+  border: none; border-radius: var(--r-pill);
+  padding: 18px 40px;
+  font-size: 16px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 8px 30px rgba(255,107,74,0.35);
+  text-decoration: none; display: inline-block;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(255,107,74,0.45);
+  background: #ff5533;
+}
+
+.btn-secondary {
+  background: transparent; color: var(--plum);
+  border: 2px solid var(--plum);
+  border-radius: var(--r-pill);
+  padding: 16px 36px;
+  font-size: 16px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-decoration: none; display: inline-block;
+}
+
+.btn-secondary:hover {
+  background: var(--plum); color: var(--white);
+  transform: translateY(-2px);
+}
+
+.hero-stats {
+  display: flex; gap: 36px;
+}
+
+.stat { }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 900;
+  color: var(--plum);
+}
+.stat-label {
+  font-size: 13px; color: var(--muted); font-weight: 400;
+  margin-top: 2px;
+}
+
+/* Hero visual side */
+.hero-visual {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  height: 560px;
+}
+
+.hero-pill-main {
+  width: 320px; height: 320px;
+  background: linear-gradient(135deg, var(--peach) 0%, var(--coral) 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 100px;
+  animation: float 5s ease-in-out infinite;
+  box-shadow: var(--shadow-lg);
+  position: relative; z-index: 2;
+}
+
+.hero-orbiting-badge {
+  position: absolute;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 14px 20px;
+  box-shadow: var(--shadow);
+  font-size: 14px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+  animation: float 4s ease-in-out infinite;
+}
+
+.hero-orbiting-badge:nth-child(2) {
+  top: 40px; right: 0;
+  animation-delay: 0.5s;
+}
+.hero-orbiting-badge:nth-child(3) {
+  bottom: 100px; left: -20px;
+  animation-delay: 1s;
+}
+.hero-orbiting-badge:nth-child(4) {
+  top: 200px; right: -30px;
+  animation-delay: 1.5s;
+}
+
+.badge-icon { font-size: 22px; }
+.badge-text { line-height: 1.2; }
+.badge-text small { display: block; font-size: 11px; color: var(--muted); font-weight: 400; }
+
+/* Spinning ring */
+.spin-ring {
+  position: absolute;
+  width: 400px; height: 400px;
+  border: 2px dashed rgba(255,107,74,0.2);
+  border-radius: 50%;
+  animation: spin-slow 20s linear infinite;
+}
+
+/* ─── TICKER ─────────────────────────────────────────── */
+.ticker {
+  background: var(--plum);
+  padding: 14px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-track {
+  display: inline-flex;
+  animation: marquee 20s linear infinite;
+}
+
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 16px;
+  padding: 0 32px;
+  font-size: 14px; font-weight: 600;
+  color: var(--peach);
+  letter-spacing: 0.5px;
+}
+
+.ticker-sep { color: var(--coral); }
+
+/* ─── SECTION WRAPPER ────────────────────────────────── */
+.section { padding: 100px 80px; }
+.section-sm { padding: 60px 80px; }
+
+.section-eyebrow {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--coral);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: 1.05;
+  color: var(--plum);
+  margin-bottom: 16px;
+}
+
+.section-sub {
+  font-size: 17px; color: var(--muted);
+  max-width: 560px; line-height: 1.7;
+}
+
+/* ─── BENEFITS ───────────────────────────────────────── */
+.benefits { background: var(--plum); }
+
+.benefits .section-eyebrow { color: var(--peach); }
+.benefits .section-title { color: var(--white); }
+.benefits .section-sub { color: rgba(255,255,255,0.6); }
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+}
+
+.benefit-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r-card);
+  padding: 36px 28px;
+  transition: all 0.3s;
+  cursor: default;
+}
+
+.benefit-card:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-6px);
+  border-color: rgba(255,185,151,0.3);
+}
+
+.benefit-icon {
+  font-size: 40px; margin-bottom: 20px;
+  display: block;
+}
+
+.benefit-title {
+  font-size: 18px; font-weight: 700;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.benefit-desc {
+  font-size: 14px; color: rgba(255,255,255,0.55);
+  line-height: 1.6;
+}
+
+/* ─── PRODUCTS ───────────────────────────────────────── */
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 52px;
+}
+
+.product-tabs {
+  display: flex; gap: 8px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 10px 22px;
+  font-size: 14px; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all 0.2s;
+}
+
+.tab-btn.active, .tab-btn:hover {
+  background: var(--plum); color: var(--white);
+  border-color: var(--plum);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.product-card {
+  background: var(--white);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  transition: all 0.35s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 20px rgba(45,27,61,0.06);
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.product-img {
+  height: 260px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 90px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s;
+}
+
+.product-card:hover .product-img { transform: scale(1.03); }
+
+.product-badge {
+  position: absolute; top: 16px; left: 16px;
+  background: var(--coral); color: var(--white);
+  border-radius: var(--r-pill);
+  padding: 5px 14px;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.product-badge.gold { background: var(--gold); color: var(--plum); }
+.product-badge.mint { background: var(--mint); color: var(--plum); }
+
+.product-info {
+  padding: 24px 28px 28px;
+}
+
+.product-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--plum);
+  margin-bottom: 6px;
+}
+
+.product-tagline {
+  font-size: 14px; color: var(--muted);
+  margin-bottom: 16px; line-height: 1.5;
+}
+
+.product-benefits {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 20px;
+}
+
+.pill-tag {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 5px 12px;
+  font-size: 12px; color: var(--muted); font-weight: 500;
+}
+
+.product-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.product-price {
+  display: flex; align-items: baseline; gap: 8px;
+}
+
+.price-current {
+  font-size: 24px; font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  color: var(--plum);
+}
+
+.price-original {
+  font-size: 15px; color: var(--muted);
+  text-decoration: line-through;
+}
+
+.price-sub {
+  font-size: 11px; color: var(--coral);
+  font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+}
+
+.add-to-cart {
+  background: var(--plum);
+  color: var(--white);
+  border: none; border-radius: var(--r-pill);
+  width: 44px; height: 44px;
+  font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s;
+}
+
+.add-to-cart:hover {
+  background: var(--coral);
+  transform: scale(1.1) rotate(10deg);
+}
+
+/* ─── HOW IT WORKS ───────────────────────────────────── */
+.how-bg { background: linear-gradient(135deg, #fff5ef 0%, #ffeee6 100%); }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 60px;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 52px; left: calc(12.5% + 28px); right: calc(12.5% + 28px);
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--coral) 0, var(--coral) 8px, transparent 8px, transparent 20px);
+  z-index: 0;
+}
+
+.step {
+  text-align: center;
+  padding: 0 24px;
+  position: relative; z-index: 1;
+}
+
+.step-num {
+  width: 56px; height: 56px;
+  background: var(--coral); color: var(--white);
+  border-radius: 50%;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  box-shadow: 0 6px 20px rgba(255,107,74,0.35);
+  animation: pulse-ring 3s ease-in-out infinite;
+}
+
+.step:nth-child(2) .step-num { animation-delay: 0.7s; }
+.step:nth-child(3) .step-num { animation-delay: 1.4s; }
+.step:nth-child(4) .step-num { animation-delay: 2.1s; }
+
+.step-title {
+  font-size: 17px; font-weight: 700;
+  color: var(--plum);
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 14px; color: var(--muted); line-height: 1.6;
+}
+
+/* ─── REVIEWS ────────────────────────────────────────── */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 52px;
+}
+
+.review-card {
+  background: var(--white);
+  border-radius: var(--r-card);
+  padding: 32px;
+  box-shadow: 0 2px 20px rgba(45,27,61,0.06);
+  transition: all 0.3s;
+}
+
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.review-stars {
+  font-size: 18px;
+  color: var(--gold);
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+}
+
+.review-text {
+  font-size: 15px; line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.review-author {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.author-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.author-name { font-size: 14px; font-weight: 700; color: var(--plum); }
+.author-tag  { font-size: 12px; color: var(--muted); }
+
+.verified-badge {
+  margin-left: auto;
+  background: rgba(126,216,192,0.2);
+  color: #2aaa8a;
+  border-radius: var(--r-pill);
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 700;
+}
+
+/* ─── CTA SECTION ────────────────────────────────────── */
+.cta-section {
+  background: var(--coral);
+  text-align: center;
+  padding: 100px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: '🍬';
+  position: absolute;
+  font-size: 200px;
+  opacity: 0.08;
+  top: -40px; left: -40px;
+  transform: rotate(-20deg);
+}
+
+.cta-section::after {
+  content: '✦';
+  position: absolute;
+  font-size: 120px;
+  opacity: 0.1;
+  bottom: -20px; right: 80px;
+  color: var(--white);
+}
+
+.cta-title {
+  font-size: clamp(42px, 5vw, 72px);
+  color: var(--white);
+  margin-bottom: 20px;
+}
+
+.cta-sub {
+  font-size: 18px; color: rgba(255,255,255,0.8);
+  margin-bottom: 40px; max-width: 520px; margin-inline: auto;
+}
+
+.btn-white {
+  background: var(--white); color: var(--coral);
+  border: none; border-radius: var(--r-pill);
+  padding: 20px 52px;
+  font-size: 17px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.btn-white:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 50px rgba(0,0,0,0.2);
+}
+
+/* ─── FOOTER ─────────────────────────────────────────── */
+footer {
+  background: var(--plum);
+  padding: 64px 80px 40px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+
+.footer-brand-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px; font-weight: 900;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.footer-brand-name span { color: var(--peach); }
+
+.footer-desc {
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  line-height: 1.7; max-width: 280px;
+}
+
+.footer-socials {
+  display: flex; gap: 12px; margin-top: 24px;
+}
+
+.social-btn {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.social-btn:hover { background: var(--coral); transform: translateY(-2px); }
+
+.footer-col h4 {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--peach);
+  margin-bottom: 20px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 10px; }
+.footer-col ul li a {
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  text-decoration: none; transition: color 0.2s;
+}
+.footer-col ul li a:hover { color: var(--white); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; color: rgba(255,255,255,0.3);
+}
+
+/* ─── CART DRAWER ────────────────────────────────────── */
+.cart-overlay {
+  position: fixed; inset: 0;
+  background: rgba(45,27,61,0.6);
+  z-index: 200;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.cart-overlay.open { opacity: 1; pointer-events: all; }
+
+.cart-drawer {
+  position: fixed; right: 0; top: 0; bottom: 0;
+  width: min(440px, 100vw);
+  background: var(--white);
+  z-index: 201;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  display: flex; flex-direction: column;
+  box-shadow: -20px 0 80px rgba(45,27,61,0.2);
+}
+
+.cart-drawer.open { transform: translateX(0); }
+
+.cart-head {
+  padding: 28px 32px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.cart-head-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700; color: var(--plum);
+}
+
+.close-btn {
+  width: 36px; height: 36px;
+  background: var(--cream); border: none;
+  border-radius: 12px; cursor: pointer;
+  font-size: 18px; color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+
+.close-btn:hover { background: var(--border); color: var(--text); }
+
+.cart-items {
+  flex: 1; overflow-y: auto;
+  padding: 24px 32px;
+}
+
+.cart-empty {
+  text-align: center; padding: 60px 24px;
+  color: var(--muted);
+}
+
+.cart-empty-icon { font-size: 60px; margin-bottom: 16px; }
+.cart-empty h3 { font-size: 20px; margin-bottom: 8px; color: var(--plum); }
+
+.cart-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-item-img {
+  width: 70px; height: 70px;
+  background: var(--cream); border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; flex-shrink: 0;
+}
+
+.cart-item-info { flex: 1; }
+.cart-item-name { font-size: 15px; font-weight: 600; color: var(--plum); margin-bottom: 4px; }
+.cart-item-variant { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+
+.cart-item-qty {
+  display: flex; align-items: center; gap: 12px;
+}
+
+.qty-btn {
+  width: 28px; height: 28px;
+  background: var(--cream); border: none;
+  border-radius: 8px; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600; color: var(--plum);
+  transition: all 0.2s;
+}
+.qty-btn:hover { background: var(--plum); color: var(--white); }
+.qty-num { font-size: 15px; font-weight: 600; min-width: 20px; text-align: center; }
+
+.cart-item-price {
+  font-size: 16px; font-weight: 700;
+  color: var(--plum);
+  text-align: right;
+}
+
+.cart-footer {
+  padding: 28px 32px;
+  border-top: 1px solid var(--border);
+}
+
+.cart-subtotal {
+  display: flex; justify-content: space-between;
+  font-size: 16px; margin-bottom: 8px;
+}
+
+.cart-subtotal span:last-child { font-weight: 700; color: var(--plum); }
+.cart-note { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+
+.checkout-btn {
+  width: 100%;
+  background: var(--coral); color: var(--white);
+  border: none; border-radius: var(--r-pill);
+  padding: 18px;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 8px 30px rgba(255,107,74,0.35);
+}
+
+.checkout-btn:hover {
+  background: #ff5533;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(255,107,74,0.45);
+}
+
+.subscribe-toggle {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,107,74,0.08);
+  border: 1.5px solid rgba(255,107,74,0.2);
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.subscribe-toggle:hover { border-color: var(--coral); }
+.subscribe-toggle input { accent-color: var(--coral); width: 18px; height: 18px; }
+.sub-label { font-size: 14px; font-weight: 600; color: var(--plum); }
+.sub-label small { display: block; font-size: 12px; color: var(--coral); font-weight: 500; }
+
+/* ─── TOAST ──────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--plum); color: var(--white);
+  border-radius: var(--r-pill);
+  padding: 14px 28px;
+  font-size: 14px; font-weight: 600;
+  z-index: 500;
+  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 8px 30px rgba(45,27,61,0.3);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── SUBSCRIPTION BANNER ────────────────────────────── */
+.sub-banner {
+  background: var(--berry);
+  padding: 60px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.sub-banner-title {
+  font-size: clamp(28px, 3vw, 44px);
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.sub-banner-sub {
+  font-size: 16px; color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}
+
+.sub-features {
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+.sub-feature {
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 16px 20px;
+  color: var(--white);
+}
+
+.sub-feature-icon { font-size: 24px; }
+.sub-feature-text { font-size: 14px; font-weight: 500; }
+.sub-feature-text small { display: block; color: rgba(255,255,255,0.55); font-weight: 400; margin-top: 2px; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; padding: 100px 40px 60px; text-align: center; }
+  .hero-visual { display: none; }
+  .hero-ctas { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .hero-sub { margin-inline: auto; }
+  .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: repeat(2,1fr); gap: 40px; }
+  .steps::before { display: none; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .sub-banner { grid-template-columns: 1fr; }
+  .section, .cta-section { padding: 72px 40px; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 14px 20px; }
+  .nav-links { display: none; }
+  .hero { padding: 90px 24px 60px; }
+  .benefits-grid, .products-grid { grid-template-columns: 1fr; }
+  .section, .cta-section, .section-sm { padding: 60px 24px; }
+  .footer-top { grid-template-columns: 1fr; }
+  footer { padding: 48px 24px 32px; }
+  .sub-banner { padding: 48px 24px; }
+  .products-header { flex-direction: column; gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAVBAR ─────────────────────────────── -->
+<nav>
+  <a class="nav-logo" href="#"><span>H</span>echarr</a>
+  <ul class="nav-links">
+    <li><a href="#products">Shop</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#subscribe">Subscribe &amp; Save</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="openCart()">
+      🛍 Cart
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── HERO ───────────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg-blob"></div>
+  <div class="hero-bg-blob-2"></div>
+
+  <div>
+    <div class="hero-badge animate-fadeUp">Clinically formulated · 60+ nutrients</div>
+    <h1 class="display hero-title animate-fadeUp delay-1">
+      Feel your<br/><em>absolute best.</em>
+    </h1>
+    <p class="hero-sub animate-fadeUp delay-2">
+      Hecharr gummies pack over 60 vitamins, minerals, adaptogens, and superfoods into one delicious daily snack. No pills. No powders. Just results.
+    </p>
+    <div class="hero-ctas animate-fadeUp delay-3">
+      <a href="#products" class="btn-primary">Shop Gummies</a>
+      <a href="#how" class="btn-secondary">How It Works</a>
+    </div>
+    <div class="hero-stats animate-fadeUp delay-4">
+      <div class="stat">
+        <div class="stat-num">60+</div>
+        <div class="stat-label">Nutrients</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">50k+</div>
+        <div class="stat-label">Happy customers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4.9★</div>
+        <div class="stat-label">Average rating</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual animate-fadeUp delay-3">
+    <div class="spin-ring"></div>
+    <div class="hero-pill-main">🍬</div>
+    <div class="hero-orbiting-badge">
+      <span class="badge-icon">⚡</span>
+      <div class="badge-text">Energy Boost<small>Feel it in days</small></div>
+    </div>
+    <div class="hero-orbiting-badge">
+      <span class="badge-icon">🌿</span>
+      <div class="badge-text">All Natural<small>No artificial dyes</small></div>
+    </div>
+    <div class="hero-orbiting-badge">
+      <span class="badge-icon">🔬</span>
+      <div class="badge-text">Lab Tested<small>Third-party verified</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TICKER ─────────────────────────────── -->
+<div class="ticker">
+  <div class="ticker-track" aria-hidden="true">
+    <span class="ticker-item">✦ FREE SHIPPING OVER $49 <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">SUBSCRIBE &amp; SAVE 15% <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">60+ NUTRIENTS DAILY <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">NO ARTIFICIAL COLORS <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">30-DAY MONEY BACK <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">VEGAN FRIENDLY <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">✦ FREE SHIPPING OVER $49 <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">SUBSCRIBE &amp; SAVE 15% <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">60+ NUTRIENTS DAILY <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">NO ARTIFICIAL COLORS <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">30-DAY MONEY BACK <span class="ticker-sep">◆</span></span>
+    <span class="ticker-item">VEGAN FRIENDLY <span class="ticker-sep">◆</span></span>
+  </div>
+</div>
+
+<!-- ─── BENEFITS ───────────────────────────── -->
+<section class="benefits section">
+  <div class="section-eyebrow">Why Hecharr</div>
+  <h2 class="display section-title">Science-backed.<br/>Taste-approved.</h2>
+  <p class="section-sub">Every Hecharr gummy is formulated with nutritionists and made with real whole-food ingredients.</p>
+
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <span class="benefit-icon">⚡</span>
+      <div class="benefit-title">All-Day Energy</div>
+      <div class="benefit-desc">B vitamins, iron, and adaptogens work together to fuel you without the crash.</div>
+    </div>
+    <div class="benefit-card">
+      <span class="benefit-icon">🛡️</span>
+      <div class="benefit-title">Immune Defense</div>
+      <div class="benefit-desc">Vitamin C, D3, zinc, and elderberry form a powerhouse immune protocol.</div>
+    </div>
+    <div class="benefit-card">
+      <span class="benefit-icon">🧠</span>
+      <div class="benefit-title">Mental Clarity</div>
+      <div class="benefit-desc">Lion's mane, ashwagandha, and omega-3s sharpen focus and reduce brain fog.</div>
+    </div>
+    <div class="benefit-card">
+      <span class="benefit-icon">✨</span>
+      <div class="benefit-title">Glow From Within</div>
+      <div class="benefit-desc">Biotin, collagen peptides, and vitamin E for hair, skin, and nail health.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRODUCTS ───────────────────────────── -->
+<section class="section" id="products">
+  <div class="products-header">
+    <div>
+      <div class="section-eyebrow">Our lineup</div>
+      <h2 class="display section-title">Find your perfect gummy.</h2>
+    </div>
+    <div class="product-tabs">
+      <button class="tab-btn active" onclick="filterProducts('all', this)">All</button>
+      <button class="tab-btn" onclick="filterProducts('health', this)">Health</button>
+      <button class="tab-btn" onclick="filterProducts('beauty', this)">Beauty</button>
+      <button class="tab-btn" onclick="filterProducts('kids', this)">Kids</button>
+    </div>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+
+    <!-- Product 1 -->
+    <div class="product-card" data-category="health">
+      <div class="product-img" style="background:linear-gradient(135deg,#FFE8D6,#FFCBA8)">
+        🍊
+        <div class="product-badge gold">Best Seller</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Daily Vitality</div>
+        <div class="product-tagline">60 nutrients in one grab-and-go pack</div>
+        <div class="product-benefits">
+          <span class="pill-tag">Energy</span>
+          <span class="pill-tag">Immunity</span>
+          <span class="pill-tag">Gut Health</span>
+          <span class="pill-tag">Focus</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price">
+            <div>
+              <span class="price-current">$59</span>
+              <span class="price-original">$79</span>
+              <span class="price-sub">$50/mo subscribe</span>
+            </div>
+          </div>
+          <button class="add-to-cart" onclick="addToCart({name:'Daily Vitality',price:59,emoji:'🍊',variant:'28 packs'})">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="product-card" data-category="beauty">
+      <div class="product-img" style="background:linear-gradient(135deg,#FFD6EE,#FFB3D9)">
+        🍓
+        <div class="product-badge" style="background:var(--berry)">Beauty</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Glow & Radiance</div>
+        <div class="product-tagline">Collagen, biotin &amp; vitamin E for luminous skin</div>
+        <div class="product-benefits">
+          <span class="pill-tag">Skin Glow</span>
+          <span class="pill-tag">Hair Growth</span>
+          <span class="pill-tag">Nail Strength</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price">
+            <div>
+              <span class="price-current">$54</span>
+              <span class="price-original">$69</span>
+              <span class="price-sub">$46/mo subscribe</span>
+            </div>
+          </div>
+          <button class="add-to-cart" onclick="addToCart({name:'Glow & Radiance',price:54,emoji:'🍓',variant:'28 packs'})">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="product-card" data-category="kids">
+      <div class="product-img" style="background:linear-gradient(135deg,#D6F5E3,#A8E6C5)">
+        🍏
+        <div class="product-badge mint">Kids</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Little Champions</div>
+        <div class="product-tagline">Complete nutrition made for growing kids</div>
+        <div class="product-benefits">
+          <span class="pill-tag">Immunity</span>
+          <span class="pill-tag">Bone Growth</span>
+          <span class="pill-tag">Brain Dev.</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price">
+            <div>
+              <span class="price-current">$49</span>
+              <span class="price-original">$65</span>
+              <span class="price-sub">$42/mo subscribe</span>
+            </div>
+          </div>
+          <button class="add-to-cart" onclick="addToCart({name:'Little Champions',price:49,emoji:'🍏',variant:'28 packs'})">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="product-card" data-category="health">
+      <div class="product-img" style="background:linear-gradient(135deg,#E8D6FF,#D0AAFF)">
+        🫐
+        <div class="product-badge" style="background:var(--plum)">New</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Calm &amp; Sleep</div>
+        <div class="product-tagline">Magnesium, L-theanine &amp; melatonin blend</div>
+        <div class="product-benefits">
+          <span class="pill-tag">Deep Sleep</span>
+          <span class="pill-tag">Stress Relief</span>
+          <span class="pill-tag">Recovery</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price">
+            <div>
+              <span class="price-current">$52</span>
+              <span class="price-original">$68</span>
+              <span class="price-sub">$44/mo subscribe</span>
+            </div>
+          </div>
+          <button class="add-to-cart" onclick="addToCart({name:'Calm & Sleep',price:52,emoji:'🫐',variant:'28 packs'})">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="product-card" data-category="health">
+      <div class="product-img" style="background:linear-gradient(135deg,#FFF3CC,#FFE066)">
+        🍋
+        <div class="product-badge gold">Popular</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Immunity Shield</div>
+        <div class="product-tagline">Triple-strength immune support year-round</div>
+        <div class="product-benefits">
+          <span class="pill-tag">Vitamin C</span>
+          <span class="pill-tag">Zinc</span>
+          <span class="pill-tag">Elderberry</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price">
+            <div>
+              <span class="price-current">$47</span>
+              <span class="price-original">$62</span>
+              <span class="price-sub">$40/mo subscribe</span>
+            </div>
+          </div>
+          <button class="add-to-cart" onclick="addToCart({name:'Immunity Shield',price:47,emoji:'🍋',variant:'28 packs'})">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 6 -->
+    <div class="product-card" data-category="beauty">
+      <div class="product-img" style="background:linear-gradient(135deg,#FFE0CC,#FFB399)">
+        🍑
+        <div class="product-badge" style="background:var(--coral)">Limited</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Anti-Aging Formula</div>
+        <div class="product-tagline">Resveratrol, CoQ10 &amp; ceramides for age reversal</div>
+        <div class="product-benefits">
+          <span class="pill-tag">Anti-Aging</span>
+          <span class="pill-tag">Antioxidants</span>
+          <span class="pill-tag">Ceramides</span>
+        </div>
+        <div class="product-footer">
+          <div class="product-price">
+            <div>
+              <span class="price-current">$64</span>
+              <span class="price-original">$84</span>
+              <span class="price-sub">$54/mo subscribe</span>
+            </div>
+          </div>
+          <button class="add-to-cart" onclick="addToCart({name:'Anti-Aging Formula',price:64,emoji:'🍑',variant:'28 packs'})">+</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ────────────────────────── -->
+<section class="section how-bg" id="how">
+  <div style="text-align:center">
+    <div class="section-eyebrow">Simple as 1-2-3</div>
+    <h2 class="display section-title">Your daily routine,<br/>upgraded.</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Take Your Quiz</div>
+      <div class="step-desc">Answer a few questions about your health goals and we'll recommend your perfect stack.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Subscribe &amp; Save</div>
+      <div class="step-desc">Lock in 15% off and get your gummies delivered automatically every 28 days.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Snack &amp; Thrive</div>
+      <div class="step-desc">Open a pack, enjoy your gummies, and feel the difference within the first 2 weeks.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-title">Track Progress</div>
+      <div class="step-desc">Log in to your account to track your streak, manage your subscription, and reorder anytime.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SUBSCRIBE BANNER ────────────────────── -->
+<section class="sub-banner" id="subscribe">
+  <div>
+    <div class="section-eyebrow" style="color:rgba(255,255,255,0.6)">Subscription</div>
+    <h2 class="display sub-banner-title">Never run out.<br/>Always save.</h2>
+    <p class="sub-banner-sub">Join 50,000+ members who subscribe and save 15% on every order. Cancel or pause anytime — no questions asked.</p>
+    <a href="#products" class="btn-white" style="margin-top:32px;display:inline-block;color:var(--berry)">Start My Subscription</a>
+  </div>
+  <div class="sub-features">
+    <div class="sub-feature">
+      <span class="sub-feature-icon">💸</span>
+      <div class="sub-feature-text">15% off every order<small>Locked in for life of subscription</small></div>
+    </div>
+    <div class="sub-feature">
+      <span class="sub-feature-icon">🚚</span>
+      <div class="sub-feature-text">Free priority shipping<small>Every 28 days, right to your door</small></div>
+    </div>
+    <div class="sub-feature">
+      <span class="sub-feature-icon">⏸️</span>
+      <div class="sub-feature-text">Pause or cancel anytime<small>No fees, no hoops to jump through</small></div>
+    </div>
+    <div class="sub-feature">
+      <span class="sub-feature-icon">🎁</span>
+      <div class="sub-feature-text">Exclusive member perks<small>Early access, surprise gifts &amp; more</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── REVIEWS ────────────────────────────── -->
+<section class="section" id="reviews">
+  <div style="text-align:center">
+    <div class="section-eyebrow">Customer Love</div>
+    <h2 class="display section-title">50,000+ happy customers<br/>and counting.</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I've tried every greens powder on the market. They always taste like grass clippings. Hecharr actually tastes like a treat and I can feel the difference in my energy within a week. Genuinely shocked."</p>
+      <div class="review-author">
+        <div class="author-avatar" style="background:var(--coral)">S</div>
+        <div>
+          <div class="author-name">Sarah M.</div>
+          <div class="author-tag">Daily Vitality · 6 months</div>
+        </div>
+        <span class="verified-badge">✓ Verified</span>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"My skin has literally never looked better. I started the Glow gummies and within 3 weeks people kept asking what skincare I was using. The secret is these gummies lol."</p>
+      <div class="review-author">
+        <div class="author-avatar" style="background:var(--berry)">J</div>
+        <div>
+          <div class="author-name">Jordan K.</div>
+          <div class="author-tag">Glow &amp; Radiance · 4 months</div>
+        </div>
+        <span class="verified-badge">✓ Verified</span>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"My kids FIGHT over who gets their gummies first in the morning. As a parent that is an absolute miracle. No more supplement struggles, no weird after taste. 10/10."</p>
+      <div class="review-author">
+        <div class="author-avatar" style="background:var(--mint);color:var(--plum)">M</div>
+        <div>
+          <div class="author-name">Monica R.</div>
+          <div class="author-tag">Little Champions · 8 months</div>
+        </div>
+        <span class="verified-badge">✓ Verified</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA SECTION ────────────────────────── -->
+<section class="cta-section">
+  <h2 class="display cta-title">Ready to feel<br/><em style="font-style:italic;color:var(--gold)">incredible?</em></h2>
+  <p class="cta-sub">Join 50,000+ people who've already made Hecharr their daily ritual. Your first order ships free.</p>
+  <button class="btn-white" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+    Shop All Gummies →
+  </button>
+</section>
+
+<!-- ─── FOOTER ─────────────────────────────── -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-name"><span>H</span>echarr</div>
+      <div class="footer-desc">Whole-food nutrition reimagined as a gummy snack. Science-backed, taste-approved.</div>
+      <div class="footer-socials">
+        <a class="social-btn" href="#">📸</a>
+        <a class="social-btn" href="#">🐦</a>
+        <a class="social-btn" href="#">▶️</a>
+        <a class="social-btn" href="#">📌</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">Daily Vitality</a></li>
+        <li><a href="#">Glow &amp; Radiance</a></li>
+        <li><a href="#">Little Champions</a></li>
+        <li><a href="#">Calm &amp; Sleep</a></li>
+        <li><a href="#">All Products</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Ingredients</a></li>
+        <li><a href="#">Science</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Hecharr LLC. All rights reserved.</span>
+    <span>Privacy Policy · Terms of Service · Cookie Policy</span>
+  </div>
+</footer>
+
+<!-- ─── CART DRAWER ─────────────────────────── -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <div class="cart-head-title">Your Cart 🛍</div>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <div class="cart-empty-icon">🍬</div>
+      <h3>Your cart is empty</h3>
+      <p>Add some gummies to get started!</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <label class="subscribe-toggle">
+      <input type="checkbox" id="subscribeToggle" onchange="updateSubToggle(this)"/>
+      <div class="sub-label">
+        Subscribe &amp; Save 15%
+        <small>Ships every 28 days · Cancel anytime</small>
+      </div>
+    </label>
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <span id="cartTotal">$0.00</span>
+    </div>
+    <div class="cart-note">Shipping &amp; taxes calculated at checkout</div>
+    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- ─── TOAST ──────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CART STATE ──────────────────────────────
+let cart = [];
+let isSubscription = false;
+
+function addToCart(product) {
+  const existing = cart.find(i => i.name === product.name);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+  renderCart();
+  openCart();
+  showToast(`${product.emoji} ${product.name} added to cart!`);
+}
+
+function removeFromCart(name) {
+  cart = cart.filter(i => i.name !== name);
+  renderCart();
+}
+
+function updateQty(name, delta) {
+  const item = cart.find(i => i.name === name);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.name !== name);
+  renderCart();
+}
+
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const empty = document.getElementById('cartEmpty');
+  const totalEl = document.getElementById('cartTotal');
+  const countEl = document.getElementById('cartCount');
+
+  const totalItems = cart.reduce((s, i) => s + i.qty, 0);
+  countEl.textContent = totalItems;
+
+  if (cart.length === 0) {
+    container.innerHTML = '';
+    container.appendChild(empty);
+    empty.style.display = 'block';
+    totalEl.textContent = '$0.00';
+    return;
+  }
+
+  empty.style.display = 'none';
+  let subtotal = 0;
+
+  container.innerHTML = cart.map(item => {
+    const price = isSubscription ? item.price * 0.85 : item.price;
+    const lineTotal = price * item.qty;
+    subtotal += lineTotal;
+    return `
+      <div class="cart-item">
+        <div class="cart-item-img">${item.emoji}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-variant">${item.variant}${isSubscription ? ' · Subscribe' : ''}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="updateQty('${item.name}', -1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="updateQty('${item.name}', 1)">+</button>
+          </div>
+        </div>
+        <div class="cart-item-price">$${lineTotal.toFixed(2)}</div>
+      </div>
+    `;
+  }).join('');
+
+  totalEl.textContent = `$${subtotal.toFixed(2)}`;
+}
+
+function updateSubToggle(el) {
+  isSubscription = el.checked;
+  renderCart();
+}
+
+function openCart() {
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function checkout() {
+  if (cart.length === 0) return showToast('Add items to your cart first!');
+  showToast('🔐 Redirecting to secure checkout...');
+  // In production: redirect to Stripe Checkout session
+  setTimeout(() => {
+    alert('This would redirect to Stripe Checkout.\n\nConnect your backend API to complete payment integration.');
+  }, 1200);
+}
+
+// ─── TOAST ───────────────────────────────────
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ─── PRODUCT FILTER ──────────────────────────
+function filterProducts(cat, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  document.querySelectorAll('.product-card').forEach(card => {
+    if (cat === 'all' || card.dataset.category === cat) {
+      card.style.display = '';
+      card.style.animation = 'pop 0.4s ease both';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// ─── SCROLL ANIMATIONS ────────────────────────
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animation = 'fadeUp 0.7s ease both';
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.product-card, .benefit-card, .review-card, .step, .sub-feature')
+  .forEach(el => observer.observe(el));
+
+// ─── NAVBAR SCROLL ────────────────────────────
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.boxShadow = window.scrollY > 40 ? '0 4px 30px rgba(45,27,61,0.12)' : 'none';
+});
+</script>
+</body>
+</html>
